@@ -40,9 +40,9 @@ module.exports = function(
 
   // Setup the script rules
   appPackage.scripts = {
-    start: 'xj-react-scripts start',
-    build: 'xj-react-scripts build',
-    test: 'xj-react-scripts test --env=jsdom',
+    start: 'react-app-rewired start --scripts-version xj-react-scripts',
+    build: 'react-app-rewired build --scripts-version xj-react-scripts',
+    test: 'react-app-rewired test --env=jsdom --scripts-version xj-react-scripts',
     eject: 'xj-react-scripts eject',
   };
 
@@ -104,24 +104,54 @@ module.exports = function(
   }
 
   // Install dev dependencies
-  const types = [
-    '@types/node',
-    '@types/react',
-    '@types/react-dom',
-    '@types/jest',
-    'typescript',
+  const devDependenciesType = [
+    "@types/node@10.12.14",
+    "@types/react",
+    "@types/react-dom",
+    "@types/react-redux@6.0.11",
+    "@types/react-router@4.0.30",
+    "@types/react-router-dom@4.3.0",
+    "@types/redux-actions@2.3.0",
+    "immutability-helper@2.9.0",
+    "react-app-rewire-less@2.1.2",
+    "react-app-rewired@1.5.2",
+    "ts-import-plugin@1.5.4",
+    "tslint@5.11.0",
+    "typescript@3.2.2"
   ];
-
   console.log(
-    `Installing ${types.join(', ')} as dev dependencies ${command}...`
+    `Installing ${devDependenciesType.join(', ')} as dev dependencies ${command}...`
   );
   console.log();
 
-  const devProc = spawn.sync(command, args.concat('-D').concat(types), {
+  const devProc = spawn.sync(command, args.concat('-D').concat(devDependenciesType), {
     stdio: 'inherit',
   });
   if (devProc.status !== 0) {
-    console.error(`\`${command} ${args.concat(types).join(' ')}\` failed`);
+    console.error(`\`${command} ${args.concat(devDependenciesType).join(' ')}\` failed`);
+    return;
+  }
+  // Install dependencies
+  const dependenciesType = [
+    "antd@3.11.2",
+    "connected-react-router@4.3.0",
+    "history@4.7.2",
+    "react",
+    "react-dom",
+    "react-redux@5.0.7",
+    "react-router@4.3.1",
+    "react-router-dom@4.3.1",
+    "redux@4.0.0",
+    "redux-actions@2.6.1",
+    "redux-saga@0.16.2"
+  ];
+
+  console.log(`Installing antd as dependency ${command}...`);
+  console.log();
+
+  const proc = spawn.sync(command, args.concat(dependenciesType), { stdio: 'inherit' });
+  if (proc.status !== 0) {
+    console.error(`\`${command} ${args.concat(dependenciesType).join(' ')}\` failed`);
     return;
   }
 
@@ -147,7 +177,7 @@ module.exports = function(
     console.log(`Installing react and react-dom using ${command}...`);
     console.log();
 
-    const proc = spawn.sync(command, args.concat(['react', 'react-dom']), {
+    const proc = spawn.sync(command, args, {
       stdio: 'inherit',
     });
     if (proc.status !== 0) {

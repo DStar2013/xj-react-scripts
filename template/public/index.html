@@ -19,7 +19,46 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>yitu-react-project</title>
+    <script type="text/javascript">
+      // cal rem
+      (function() {
+        // 缓存原有class及上一次的宽度
+        var docEl = document.documentElement,
+          originClassName = docEl.className,
+          timer = null,
+          prevWidth = 0;
+        // originClassName = originClassName ? (originClassName + ' ') : '';
+        var calculate_size = function(width) {
+          var clientWidth = docEl.clientWidth,
+            clientHeight = docEl.clientHeight;
+          // 排除键盘弹起引起的窗口变化
+          if(prevWidth === clientWidth) return;
+          var BASE_FONT_SIZE = 16,
+            minWidth = Math.min(clientWidth, clientHeight),
+            arr = [];
+          // docEl.className = originClassName + arr.join(' ');
+          docEl.style.fontSize = BASE_FONT_SIZE * (clientWidth / width) + 'px';
+          prevWidth = clientWidth;
+        };
+
+        var addRem = function(width) {
+          if (document.addEventListener) {
+            var resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize';
+            window.addEventListener(resizeEvt, calculate_size.bind(null, width), false);
+            document.addEventListener('DOMContentLoaded', calculate_size.bind(null, width), false);
+            calculate_size(width);
+          } else {
+            window.onload = function() {
+              calculate_size(width);
+            };
+            calculate_size(width);
+            window.onresize = window.onload;
+          }
+        };
+        addRem(1920);
+      })();
+    </script>
   </head>
   <body>
     <noscript>
